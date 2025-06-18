@@ -158,17 +158,22 @@ dic_return()
 
 
 
-# weighted score 컬럼만 추출 (예: r02_weighted_score → r02)
-weighted_score_cols = [col for col in df.columns if col.endswith("_weighted_score")]
-risk_codes = [col.split("_")[0] for col in weighted_score_cols]
+# 🔍 risk 코드 추출 (weighted score 항목만 사용)
+risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
 
-# 새로운 DataFrame 구성: 행 = prompt_code, 열 = risk_code, 값 = weighted_score
-heatmap_df = pd.DataFrame(index=df["prompt_code"], columns=risk_codes)
+# 🔧 히트맵 데이터프레임 초기화
+heatmap_df = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
 
-# 각 risk_code에 대해 heatmap_df에 값 채우기
-for full_col, risk_code in zip(weighted_score_cols, risk_codes):
-    heatmap_df[risk_code] = df[full_col]
+# 📌 각 셀에 값 삽입
+for _, row in df.iterrows():
+    prompt = row["prompt_code"]
+    for risk_code in risk_codes:
+        col_name = f"{risk_code}_weighted_score"
+        if col_name in df.columns:
+            heatmap_df.at[prompt, risk_code] = row[col_name]
 
+# 🔢 float으로 변환
+heatmap_df = heatmap_df.astype(float)
 #heatmap_df.index = [risk_types.get(r, r) for r in heatmap_df.index]
 #heatmap_df.columns = [prompt_types.get(p, p) for p in heatmap_df.columns]
 
