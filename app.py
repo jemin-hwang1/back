@@ -174,6 +174,16 @@ for _, row in df.iterrows():
 
 # 🔢 float으로 변환
 heatmap_df = heatmap_df.astype(float)
+
+# 📊 시각화
+plt.figure(figsize=(20, 8))
+sns.heatmap(heatmap_df, annot=True, fmt=".2f", cmap="YlGnBu", linewidths=0.5, linecolor='gray')
+
+plt.title("🧯 Prompt Type별 Risk Category 가중 평균 점수 Heatmap")
+plt.xlabel("Risk Code")
+plt.ylabel("Prompt Type")
+plt.tight_layout()
+plt.show()
 #heatmap_df.index = [risk_types.get(r, r) for r in heatmap_df.index]
 #heatmap_df.columns = [prompt_types.get(p, p) for p in heatmap_df.columns]
 
