@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import random
 import uuid
-from utils import get_risk_definitions, generate_dataframe_with_exclusions, style_dataframe, notMC_parsing, MC_parsing, highlight_excluded_rows_factory
 from collections import OrderedDict
 
 
