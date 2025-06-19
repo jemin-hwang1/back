@@ -24,6 +24,10 @@ def dic_return():
     for _, row in df.iterrows():
         prompt_code = row['prompt_code']
 
+        # RP 파생형을 'RP'로 통합 처리
+        if isinstance(prompt_code, str) and prompt_code.startswith("RP"):
+            prompt_code = "RP"
+
         # r01 ~ r35 반복
         for i in range(1, 36):
             risk_code = f"r{i:02d}"
@@ -88,12 +92,12 @@ st.markdown('<div class="description"> AssureAI의 Safety Score를 시각화합�
 # 위험 카테고리 및 데이터 구성
 # --------------------------
 risk_types = OrderedDict({
-    #"r01": "1. Supporting Malicious Organized Groups",
+    "r01": "1. Supporting Malicious Organized Groups",
     "r02": "2. Celebrating Suffering",
     "r03": "3. Violent Acts",
     "r04": "4. Depicting Violence",
-    #"r05": "5. Weapon Usage & Development",
-    #"r06": "6. Military and Warfare",
+    "r05": "5. Weapon Usage & Development",
+    "r06": "6. Military and Warfare",
     "r07": "7. Harassment",
     "r08": "8. Hate Speech",
     "r09": "9. Offensive Language",
@@ -139,43 +143,39 @@ prompt_types =  OrderedDict({
 
 dic_return()
 
-# other_grouped_data = notMC_parsing(other_file_log)
-# mc_grouped_data = MC_parsing(mc_file_log)
+# 딕셔너리를 리스트로 변환
+records = []
+for (risk_code, prompt_code), stats in final_stat_dict.items():
+    records.append({
+        "risk_code": risk_code,
+        "prompt_code": prompt_code,
+        "sum_base_score": stats["sum_base_score"],
+        "weighted_mean_score": stats["weighted_mean_score"]
+    })
 
+# DataFrame → Pivot (행: prompt_code, 열: risk_code)
+df = pd.DataFrame(records)
+heatmap_df_weight = df.pivot(index="prompt_code", columns="risk_code", values="weighted_mean_score")
 
-# risk_prompt_matrix, risk_bar_data, prompt_bar_data = generate_dataframe_with_exclusions(prompt_types, risk_types, other_grouped_data)
+heatmap_df_avg = df.pivot(index="prompt_code", columns="risk_code", values="sum_base_score")
 
-# print("✔ 전체 Risk ID 개수:", len(risk_prompt_matrix))
-# print("✔ 예시 Risk ID들:", list(risk_prompt_matrix.keys())[:5])
+# # 🔍 risk 코드 추출 (weighted score 항목만 사용)
+# risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
 
-# for r_id, prompts in list(risk_prompt_matrix.items())[:3]:  # 상위 3개만 보기
-#     print(f"🔍 {r_id} → {len(prompts)} prompt types")
-#     for p_id, score in prompts.items():
-#         print(f"    ↪ {p_id}: {score:.2f}")
+# # 🔧 히트맵 데이터프레임 초기화
+# heatmap_df_weight = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
 
-# total_cells = sum(len(p_dict) for p_dict in risk_prompt_matrix.values())
-# print(f"📊 총 채워진 (risk, prompt) 조합 수: {total_cells}")
+# heatmap_df_avg = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
 
-
-
-# 🔍 risk 코드 추출 (weighted score 항목만 사용)
-risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
-
-# 🔧 히트맵 데이터프레임 초기화
-heatmap_df_weight = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
-
-heatmap_df_avg = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
-
-# 📌 각 셀에 값 삽입
-for _, row in df.iterrows():
-    print("test")
-    prompt = row["prompt_code"]
-    for risk_code in risk_codes:
-        col_name_weight = f"{risk_code}_weighted_score"
-        col_name_avg = f"{risk_code}_sum_base_score"
-        if col_name_weight in df.columns:
-            heatmap_df_weight.at[prompt, risk_code] = row[col_name_weight]
-            heatmap_df_avg.at[prompt, risk_code] = row[col_name_avg]
+# # 📌 각 셀에 값 삽입
+# for _, row in df.iterrows():
+#     prompt = row["prompt_code"]
+#     for risk_code in risk_codes:
+#         col_name_weight = f"{risk_code}_weighted_score"
+#         col_name_avg = f"{risk_code}_sum_base_score"
+#         if col_name_weight in df.columns:
+#             heatmap_df_weight.at[prompt, risk_code] = row[col_name_weight]
+#             heatmap_df_avg.at[prompt, risk_code] = row[col_name_avg]
 
 # 🔢 float으로 변환
 heatmap_df_weight = heatmap_df_weight.astype(float)
