@@ -169,7 +169,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
 
 print("📝 records 내용 확인:")
 for idx, record in enumerate(records):
-    print(f"🔹 [{idx+1}] Risk: {record['risk_code']} | Prompt: {record['prompt_type']}")
+    print(f"🔹 [{idx+1}] Risk: {record['risk_type']} | Prompt: {record['prompt_type']}")
     print(f"    ├─ Sum Base Score: {record['sum_base_score']}")
     print(f"    └─ Weighted Mean Score: {record['weighted_mean_score']:.2f}")
 
