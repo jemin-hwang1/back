@@ -26,6 +26,7 @@ def dic_return():
         print("prompt_code 변경 중...", prompt_code)
         # RP 파생형을 'RP'로 통합 처리
         
+        print(prompt_code in {"pRPfun", "pRPemo", "pRPedu"})
         if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
             print("change: ", prompt_code)
             prompt_code = " pRP"
