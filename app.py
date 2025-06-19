@@ -23,7 +23,7 @@ def dic_return():
     # 각 row의 prompt_code 기준으로 순회
     for _, row in excel_data.iterrows():
         prompt_code = row['prompt_code']
-
+        print("prompt_code 변경 중...", prompt_code)
         # RP 파생형을 'RP'로 통합 처리
         if prompt_code.startswith("RP"):
             print("change: ", prompt_code)
