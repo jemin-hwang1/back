@@ -169,7 +169,7 @@ records.sort(key=lambda r: (extract_risk_number(r["risk_code"]), r["prompt_type"
 
 # 정렬 결과 확인
 for idx, r in enumerate(records[:10]):
-    print(f"{idx+1:02d} | {r['risk_code']} | {r['prompt_code']}")
+    print(f"{idx+1:02d} | {r['risk_code']} | {r['prompt_type']}")
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
