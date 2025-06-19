@@ -154,9 +154,15 @@ for (risk_code, prompt_code), stats in sorted(final_stat_dict.items()):
 # 딕셔너리를 리스트로 변환
 records = []
 for (risk_code, prompt_code), stats in final_stat_dict.items():
+    # pRP 계열은 "pRP"로 치환
+    if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
+        prompt_code = "pRP"
+    
+    readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
+
     records.append({
         "risk_code": risk_code,
-        "prompt_code": prompt_code,
+        "prompt_type": readable_prompt_type,
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
