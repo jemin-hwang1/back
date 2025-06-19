@@ -153,7 +153,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
     records.append({
-        "risk_code": risk_code,
+        "risk_code": risk_code.strip(),
         "risk_type": readable_risk_type,
         "prompt_type": readable_prompt_type,
         "sum_base_score": stats["sum_base_score"],
