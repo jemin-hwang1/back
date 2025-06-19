@@ -25,7 +25,8 @@ def dic_return():
         prompt_code = row['prompt_code']
 
         # RP 파생형을 'RP'로 통합 처리
-        if isinstance(prompt_code, str) and prompt_code.startswith("RP"):
+        if prompt_code.startswith("RP"):
+            print("change: ", prompt_code)
             prompt_code = "RP"
 
         # r01 ~ r35 반복
