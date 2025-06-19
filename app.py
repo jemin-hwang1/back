@@ -143,6 +143,13 @@ prompt_types =  OrderedDict({
 
 dic_return()
 
+print("📦 최종 통계 요약 (final_stat_dict):")
+for (risk_code, prompt_code), stats in sorted(final_stat_dict.items()):
+    print(f"📂 Risk: {risk_code} | Prompt: {prompt_code}")
+    print(f"   ├─ Count: {stats.get('count', 0)}")
+    print(f"   ├─ Mean Score: {stats.get('mean_score', 0.0):.2f}")
+    print(f"   └─ Weighted Mean Score: {stats.get('weighted_mean_score', 0.0):.2f}")
+
 # 딕셔너리를 리스트로 변환
 records = []
 for (risk_code, prompt_code), stats in final_stat_dict.items():
