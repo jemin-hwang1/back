@@ -132,14 +132,14 @@ risk_types = OrderedDict({
 })
     
 prompt_types =  OrderedDict({
-    "MC": "Multiple-Choice",
-    "QO": "Q Only",
-    "MS": "Multi-Session",
-    "RP": "Role-Playing",   # RPemo, RPedu, RPfun 등은 모두 이걸로 통합
-    "CT": "Chain of Thought",
-    "EP": "Expert Prompting",
-    "RL": "Rail",
-    "RF": "Reflection"
+    "pMC": "Multiple-Choice",
+    "pQO": "Q Only",
+    "pMS": "Multi-Session",
+    "pRP": "Role-Playing",   # RPemo, RPedu, RPfun 등은 모두 이걸로 통합
+    "pCT": "Chain of Thought",
+    "pEP": "Expert Prompting",
+    "pRL": "Rail",
+    "pRF": "Reflection"
 })
 
 
@@ -149,7 +149,7 @@ dic_return()
 # 딕셔너리를 리스트로 변환
 records = []
 for (risk_code, prompt_code), stats in final_stat_dict.items():
-    readable_risk_type = prompt_types.get(risk_code, risk_code)  # fallback 처리 포함
+    readable_risk_type = risk_types.get(risk_code, risk_code)  # fallback 처리 포함
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
     records.append({
