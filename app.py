@@ -14,14 +14,14 @@ from collections import OrderedDict
 excel_path = "./final_stat_summary.xlsx"  # 실제 경로에 맞게 수정
 excluded_ids = {1,5,6}
 # 엑셀 시트 로드
-df = pd.read_excel(excel_path, sheet_name="Sheet1")
+excel_data = pd.read_excel(excel_path, sheet_name="Sheet1")
 
 # 딕셔너리 생성: (risk_code, prompt_code) -> {count, mean_score, weighted_mean_score}
 final_stat_dict = {}
 
 def dic_return():
     # 각 row의 prompt_code 기준으로 순회
-    for _, row in df.iterrows():
+    for _, row in excel_data.iterrows():
         prompt_code = row['prompt_code']
 
         # RP 파생형을 'RP'로 통합 처리
@@ -159,6 +159,12 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
+
+print("📝 records 내용 확인:")
+for idx, record in enumerate(records):
+    print(f"🔹 [{idx+1}] Risk: {record['risk_code']} | Prompt: {record['prompt_code']}")
+    print(f"    ├─ Sum Base Score: {record['sum_base_score']}")
+    print(f"    └─ Weighted Mean Score: {record['weighted_mean_score']:.2f}")
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
