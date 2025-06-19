@@ -23,7 +23,6 @@ def dic_return():
     # 각 row의 prompt_code 기준으로 순회
     for _, row in excel_data.iterrows():
         prompt_code = row['prompt_code'].strip()  # 앞뒤 공백 제거
-        print("prompt_code 변경 중...", prompt_code)
 
         # RP 파생형을 'RP'로 통합 처리        
         if prompt_code.startswith("pRP"):
@@ -161,6 +160,10 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
+
+# 정렬된 상태로 pivot을 만들기 위해 먼저 정렬
+df_sorted = df.sort_values(by=["risk_code", "prompt_code"]) 
+
 heatmap_df_weight = df.pivot(index="prompt_type", columns="risk_type", values="weighted_mean_score")
 
 heatmap_df_avg = df.pivot(index="prompt_type", columns="risk_type", values="sum_base_score")
