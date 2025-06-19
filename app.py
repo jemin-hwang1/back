@@ -27,7 +27,7 @@ def dic_return():
         # RP 파생형을 'RP'로 통합 처리
         if prompt_code.startswith("pRP"):
             print("change: ", prompt_code)
-            prompt_code = "pRP"
+            prompt_code = "RP"
 
         # r01 ~ r35 반복
         for i in range(1, 36):
