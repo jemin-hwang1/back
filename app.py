@@ -4,6 +4,7 @@ import matplotlib.cm as cm
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import re
 import random
 import uuid
 from utils import highlight_excluded_rows_factory
@@ -157,6 +158,13 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
+def extract_risk_number(risk_code: str) -> int:
+    """문자열에서 숫자만 추출하여 정수로 반환 ('r02' → 2, 'r10' → 10 등)"""
+    match = re.search(r"\d+", risk_code)
+    return int(match.group()) if match else float('inf')
+
+# ✅ 기존 records 리스트를 숫자 기준으로 정렬
+records.sort(key=lambda r: (extract_risk_number(r["risk_code"]), r["prompt_code"]))
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
@@ -165,14 +173,6 @@ df = pd.DataFrame(records)
 heatmap_df_weight = df.pivot(index="prompt_type", columns="risk_type", values="weighted_mean_score")
 
 heatmap_df_avg = df.pivot(index="prompt_type", columns="risk_type", values="sum_base_score")
-def sort_risk_codes(risk_codes):
-    return sorted(risk_codes, key=lambda x: int(x[1:]))
-
-# 정렬된 risk_code 리스트 생성
-sorted_risk_codes = sort_risk_codes(heatmap_df_weight.columns)
-# 정렬 적용
-heatmap_df_weight = heatmap_df_weight.reindex(sorted_risk_codes, axis=1)
-heatmap_df_avg = heatmap_df_avg.reindex(sorted_risk_codes, axis=1)
 # 🔢 float으로 변환
 heatmap_df_weight = heatmap_df_weight.astype(float)
 heatmap_df_avg = heatmap_df_avg.astype(float)
