@@ -164,7 +164,7 @@ def extract_risk_number(risk_code: str) -> int:
     return int(match.group()) if match else float('inf')
 
 # ✅ 기존 records 리스트를 숫자 기준으로 정렬
-records.sort(key=lambda r: (extract_risk_number(r["risk_code"]), r["prompt_code"]))
+records.sort(key=lambda r: (extract_risk_number(r["risk_type"]), r["prompt_type"]))
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
@@ -176,8 +176,6 @@ heatmap_df_avg = df.pivot(index="prompt_type", columns="risk_type", values="sum_
 # 🔢 float으로 변환
 heatmap_df_weight = heatmap_df_weight.astype(float)
 heatmap_df_avg = heatmap_df_avg.astype(float)
-#heatmap_df.index = [risk_types.get(r, r) for r in heatmap_df.index]
-#heatmap_df.columns = [prompt_types.get(p, p) for p in heatmap_df.columns]
 
 # --------------------------
 # 탭 구성 시작
