@@ -161,31 +161,18 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
 
-# 정렬된 상태로 pivot을 만들기 위해 먼저 정렬
-df_sorted = df.sort_values(by=["risk_type", "prompt_type"]) 
 
 heatmap_df_weight = df.pivot(index="prompt_type", columns="risk_type", values="weighted_mean_score")
 
 heatmap_df_avg = df.pivot(index="prompt_type", columns="risk_type", values="sum_base_score")
+def sort_risk_codes(risk_codes):
+    return sorted(risk_codes, key=lambda x: int(x[1:]))
 
-# # 🔍 risk 코드 추출 (weighted score 항목만 사용)
-# risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
-
-# # 🔧 히트맵 데이터프레임 초기화
-# heatmap_df_weight = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
-
-# heatmap_df_avg = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
-
-# # 📌 각 셀에 값 삽입
-# for _, row in df.iterrows():
-#     prompt = row["prompt_code"]
-#     for risk_code in risk_codes:
-#         col_name_weight = f"{risk_code}_weighted_score"
-#         col_name_avg = f"{risk_code}_sum_base_score"
-#         if col_name_weight in df.columns:
-#             heatmap_df_weight.at[prompt, risk_code] = row[col_name_weight]
-#             heatmap_df_avg.at[prompt, risk_code] = row[col_name_avg]
-
+# 정렬된 risk_code 리스트 생성
+sorted_risk_codes = sort_risk_codes(heatmap_df_weight.columns)
+# 정렬 적용
+heatmap_df_weight = heatmap_df_weight.reindex(sorted_risk_codes, axis=1)
+heatmap_df_avg = heatmap_df_avg.reindex(sorted_risk_codes, axis=1)
 # 🔢 float으로 변환
 heatmap_df_weight = heatmap_df_weight.astype(float)
 heatmap_df_avg = heatmap_df_avg.astype(float)
