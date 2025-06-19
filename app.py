@@ -157,11 +157,11 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
     # pRP 계열은 "pRP"로 치환
     if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
         prompt_code = "pRP"
-    
+    readable_risk_type = prompt_types.get(risk_code, risk_code)  # fallback 처리 포함
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
     records.append({
-        "risk_code": risk_code,
+        "risk_code": readable_risk_type,
         "prompt_type": readable_prompt_type,
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
@@ -169,7 +169,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
 
 print("📝 records 내용 확인:")
 for idx, record in enumerate(records):
-    print(f"🔹 [{idx+1}] Risk: {record['risk_code']} | Prompt: {record['prompt_code']}")
+    print(f"🔹 [{idx+1}] Risk: {record['risk_code']} | Prompt: {record['prompt_type']}")
     print(f"    ├─ Sum Base Score: {record['sum_base_score']}")
     print(f"    └─ Weighted Mean Score: {record['weighted_mean_score']:.2f}")
 
