@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 # 엑셀 파일 경로
 excel_path = "./final_stat_summary.xlsx"  # 실제 경로에 맞게 수정
-
+excluded_ids = {1,5,6}
 # 엑셀 시트 로드
 df = pd.read_excel(excel_path, sheet_name="Sheet1")
 
@@ -195,6 +195,9 @@ with main_tabs[0]:
     # NaN을 기준으로 마스킹
     mask_matrix = heatmap_df_weight.isna()
 
+    # 스타일링 함수 생성
+    highlight_func = highlight_excluded_rows_factory(excluded_ids)
+
     fig, ax = plt.subplots(figsize=(20, 6))
 
     # NaN에만 색 마스크
@@ -202,6 +205,11 @@ with main_tabs[0]:
     plt.xticks(rotation=45, ha='right')
     st.pyplot(fig)
     excluded_ids = set()  # 지금은 예외 없음
+
+    # 📋 시뮬레이션 데이터 보기 영역
+    with st.expander("📋 가중평균 데이터 보기"):
+        styled_df = heatmap_df_weight.style.format("{:.2f}").apply(highlight_func, axis=1)
+        st.dataframe(styled_df)
 
     
     st.subheader("📊 위험 점수 Heatmap - 산술평균")
@@ -216,19 +224,12 @@ with main_tabs[0]:
     plt.xticks(rotation=45, ha='right')
     st.pyplot(fig)
     excluded_ids = set()  # 지금은 예외 없음
-
-    # 스타일링 함수 생성
-    highlight_func = highlight_excluded_rows_factory(excluded_ids)
-
-    # 📋 시뮬레이션 데이터 보기 영역
-    with st.expander("📋 가중평균 데이터 보기"):
-        styled_df = heatmap_df_weight.style.format("{:.2f}").apply(highlight_func, axis=1)
-        st.dataframe(styled_df)
         
     # 📋 시뮬레이션 데이터 보기 영역
     with st.expander("📋 산술평균 데이터 보기"):
         styled_df = heatmap_df_avg.style.format("{:.2f}").apply(highlight_func, axis=1)
         st.dataframe(styled_df)
+
 
 # 📙 위험 카테고리별 분석 (탭)
 with main_tabs[1]:
