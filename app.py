@@ -172,7 +172,7 @@ for _, row in df.iterrows():
     prompt = row["prompt_code"]
     for risk_code in risk_codes:
         col_name_weight = f"{risk_code}_weighted_score"
-        col_name_avg = f"{risk_code}sum_base_score"
+        col_name_avg = f"{risk_code}_sum_base_score"
         if col_name_weight in df.columns:
             heatmap_df_weight.at[prompt, risk_code] = row[col_name_weight]
             heatmap_df_avg.at[prompt, risk_code] = row[col_name_avg]
