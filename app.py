@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import random
 import uuid
+from utils import highlight_excluded_rows_factory
 from collections import OrderedDict
 
 
@@ -161,21 +162,24 @@ dic_return()
 risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
 
 # 🔧 히트맵 데이터프레임 초기화
-heatmap_df = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
+heatmap_df_weight = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
+
+heatmap_df_avg = pd.DataFrame(index=df["prompt_code"].unique(), columns=risk_codes)
 
 # 📌 각 셀에 값 삽입
 for _, row in df.iterrows():
     print("test")
     prompt = row["prompt_code"]
     for risk_code in risk_codes:
-        col_name = f"{risk_code}_weighted_score"
-        if col_name in df.columns:
-            heatmap_df.at[prompt, risk_code] = row[col_name]
-            print("test >> ", row[col_name])
+        col_name_weight = f"{risk_code}_weighted_score"
+        col_name_avg = f"{risk_code}sum_base_score"
+        if col_name_weight in df.columns:
+            heatmap_df_weight.at[prompt, risk_code] = row[col_name_weight]
+            heatmap_df_avg.at[prompt, risk_code] = row[col_name_avg]
 
 # 🔢 float으로 변환
-heatmap_df = heatmap_df.astype(float)
-
+heatmap_df_weight = heatmap_df_weight.astype(float)
+heatmap_df_avg = heatmap_df_avg.astype(float)
 #heatmap_df.index = [risk_types.get(r, r) for r in heatmap_df.index]
 #heatmap_df.columns = [prompt_types.get(p, p) for p in heatmap_df.columns]
 
@@ -186,15 +190,29 @@ main_tabs = st.tabs(["📊 Heatmap", "📙 위험 카테고리 분석", "📘 �
 
 # 📊 Heatmap
 with main_tabs[0]:
-    st.subheader("📊 위험 점수 Heatmap")
+    st.subheader("📊 위험 점수 Heatmap - 가중평균")
 
     # NaN을 기준으로 마스킹
-    mask_matrix = heatmap_df.isna()
+    mask_matrix = heatmap_df_weight.isna()
 
     fig, ax = plt.subplots(figsize=(20, 6))
 
     # NaN에만 색 마스크
-    sns.heatmap(heatmap_df.astype(float), mask=mask_matrix, annot=True, fmt=".1f", cmap="YlGnBu", vmin=1, vmax=5,linewidths=0.2,linecolor='lightgray', cbar_kws={'label': 'Safety Score', 'shrink': 0.6, 'aspect': 20},annot_kws={"size": 8})
+    sns.heatmap(heatmap_df_weight.astype(float), mask=mask_matrix, annot=True, fmt=".1f", cmap="YlGnBu", vmin=1, vmax=5,linewidths=0.2,linecolor='lightgray', cbar_kws={'label': 'Safety Score', 'shrink': 0.6, 'aspect': 20},annot_kws={"size": 8})
+    plt.xticks(rotation=45, ha='right')
+    st.pyplot(fig)
+    excluded_ids = set()  # 지금은 예외 없음
+
+    
+    st.subheader("📊 위험 점수 Heatmap - 산술평균")
+
+    # NaN을 기준으로 마스킹
+    mask_matrix = heatmap_df_avg.isna()
+
+    fig, ax = plt.subplots(figsize=(20, 6))
+
+    # NaN에만 색 마스크
+    sns.heatmap(heatmap_df_avg.astype(float), mask=mask_matrix, annot=True, fmt=".1f", cmap="YlGnBu", vmin=1, vmax=5,linewidths=0.2,linecolor='lightgray', cbar_kws={'label': 'Safety Score', 'shrink': 0.6, 'aspect': 20},annot_kws={"size": 8})
     plt.xticks(rotation=45, ha='right')
     st.pyplot(fig)
     excluded_ids = set()  # 지금은 예외 없음
@@ -203,8 +221,13 @@ with main_tabs[0]:
     highlight_func = highlight_excluded_rows_factory(excluded_ids)
 
     # 📋 시뮬레이션 데이터 보기 영역
-    with st.expander("📋 시뮬레이션 데이터 보기"):
-        styled_df = heatmap_df.style.format("{:.2f}").apply(highlight_func, axis=1)
+    with st.expander("📋 가중평균 데이터 보기"):
+        styled_df = heatmap_df_weight.style.format("{:.2f}").apply(highlight_func, axis=1)
+        st.dataframe(styled_df)
+        
+    # 📋 시뮬레이션 데이터 보기 영역
+    with st.expander("📋 산술평균 데이터 보기"):
+        styled_df = heatmap_df_avg.style.format("{:.2f}").apply(highlight_func, axis=1)
         st.dataframe(styled_df)
 
 # 📙 위험 카테고리별 분석 (탭)
