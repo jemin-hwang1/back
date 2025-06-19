@@ -8,7 +8,7 @@ import re
 import random
 import uuid
 from utils import highlight_excluded_rows_factory
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 
 # 엑셀 파일 경로
@@ -233,8 +233,35 @@ with main_tabs[0]:
 
 # 📙 위험 카테고리별 분석 (탭)
 with main_tabs[1]:
-    st.subheader("📙 위험 카테고리별 프롬프트 분석 (탭 기반)")
+    st.subheader("📙 위험 카테고리별 프롬프트 분석")
     
+    # ⚙️ 위험 카테고리별 점수 집계용 딕셔너리
+    risk_bar_data = defaultdict(list)
+
+    # 📊 final_stat_dict에서 위험 카테고리별 weighted 점수 수집
+    for (risk_code, prompt_code), stats in final_stat_dict.items():
+        risk_bar_data[risk_code].append(stats["weighted_mean_score"])
+
+    # 🎯 평균 계산
+    risk_score_avg = {
+        risk_code: sum(scores) / len(scores)
+        for risk_code, scores in risk_bar_data.items()
+    }
+
+    # 🧾 시각화용 라벨 및 값 준비
+    sorted_risks = sorted(risk_score_avg.items(), key=lambda x: int(x[0][1:]))  # r01 → 1
+    x_labels = [f"{risk_code} {risk_types.get(risk_code, '')}" for risk_code, _ in sorted_risks]
+    y_scores = [score for _, score in sorted_risks]
+
+    # 📊 Bar Chart 그리기
+    fig, ax = plt.subplots(figsize=(14, 6))
+    ax.bar(x_labels, y_scores, color='skyblue')
+    ax.set_title("💥 Risk Category 별 Weighted Mean Score", fontsize=16)
+    ax.set_xlabel("위험 카테고리", fontsize=12)
+    ax.set_ylabel("가중 평균 점수", fontsize=12)
+    plt.xticks(rotation=90)
+
+    st.pyplot(fig)
     # ⛳ df.columns[:8]를 명시적으로 리스트로 변환
     # category_labels = df.columns[:8].tolist()
     # category_tabs = st.tabs(category_labels)
