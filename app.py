@@ -258,7 +258,7 @@ with main_tabs[1]:
     ax.bar(x_labels, y_scores, color='skyblue')
     ax.set_xlabel("risk category", fontsize=12)
     ax.set_ylabel("weight_score", fontsize=12)
-ax.set_ylim(0, 5)  # ✅ y축 범위 고정 (0~5)
+    ax.set_ylim(0, 5)  # ✅ y축 범위 고정 (0~5)
     plt.xticks(rotation=45)
 
     st.pyplot(fig)
