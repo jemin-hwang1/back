@@ -292,9 +292,9 @@ with main_tabs[1]:
     #             st.dataframe(category_df.style.format({"Score": "{:.2f}"}))
 
 # 📘 프롬프트별 분석
-with main_tabs[2]:
-    st.subheader("📘 프롬프트 타입별 위험 항목 분석 (탭 기반)")
-    tabs = st.tabs(prompt_types)
+# with main_tabs[2]:
+#     st.subheader("📘 프롬프트 타입별 위험 항목 분석 (탭 기반)")
+#     tabs = st.tabs(prompt_types)
 
     # for i, tab in enumerate(tabs):
     #     prompt_type = prompt_types[i]
@@ -316,7 +316,7 @@ with main_tabs[2]:
     #             st.dataframe(pd.DataFrame({"Risk Category": prompt_scores.index, "Safety Score": prompt_scores.values}).style.format({"Safety Score": "{:.2f}"}))
 
 # 💬 대화 예시
-with main_tabs[3]:
+# with main_tabs[3]:
     st.subheader("💬 대화 예시 보기")
 
     def generate_sample_dialogue():
