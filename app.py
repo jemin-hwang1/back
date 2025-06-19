@@ -161,7 +161,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
     records.append({
-        "risk_code": readable_risk_type,
+        "risk_type": readable_risk_type,
         "prompt_type": readable_prompt_type,
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
@@ -175,9 +175,9 @@ for idx, record in enumerate(records):
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
-heatmap_df_weight = df.pivot(index="prompt_code", columns="risk_code", values="weighted_mean_score")
+heatmap_df_weight = df.pivot(index="prompt_type", columns="risk_type", values="weighted_mean_score")
 
-heatmap_df_avg = df.pivot(index="prompt_code", columns="risk_code", values="sum_base_score")
+heatmap_df_avg = df.pivot(index="prompt_type", columns="risk_type", values="sum_base_score")
 
 # # 🔍 risk 코드 추출 (weighted score 항목만 사용)
 # risk_codes = sorted(set(col.split("_")[0] for col in df.columns if col.endswith("_weighted_score")))
