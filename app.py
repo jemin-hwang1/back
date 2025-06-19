@@ -259,7 +259,7 @@ with main_tabs[1]:
     ax.set_xlabel("risk category", fontsize=12)
     ax.set_ylabel("weight_score", fontsize=12)
     ax.set_ylim(0, 5)  # ✅ y축 범위 고정 (0~5)
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=90)
 
     st.pyplot(fig)
     # ⛳ df.columns[:8]를 명시적으로 리스트로 변환
