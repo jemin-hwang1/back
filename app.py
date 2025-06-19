@@ -158,13 +158,25 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
+
 def extract_risk_number(risk_code: str) -> int:
-    """문자열에서 숫자만 추출하여 정수로 반환 ('r02' → 2, 'r10' → 10 등)"""
     match = re.search(r"\d+", risk_code)
     return int(match.group()) if match else float('inf')
 
-# ✅ 기존 records 리스트를 숫자 기준으로 정렬
-records.sort(key=lambda r: (extract_risk_number(r["risk_type"])))
+# 정렬 전 확인
+print("📦 정렬 전 risk_code 예시:")
+for rec in records[:5]:
+    print(rec["risk_type"])
+
+# 정렬 적용
+print("🔧 정렬 적용 중...")
+records.sort(key=lambda r: (extract_risk_number(r["risk_type"]), r["prompt_type"]))
+print("✅ 정렬 완료")
+
+# 정렬 결과 확인
+print("🧪 정렬 후:")
+for rec in records[:10]:
+    print(f"{rec['risk_type']} | {rec['prompt_type']} | weighted: {rec['weighted_mean_score']}")
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
