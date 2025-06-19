@@ -153,6 +153,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
     records.append({
+        "risk_code": risk_code,
         "risk_type": readable_risk_type,
         "prompt_type": readable_prompt_type,
         "sum_base_score": stats["sum_base_score"],
@@ -166,7 +167,7 @@ def extract_risk_number(risk_code) -> int:
     match = re.search(r"\d+", risk_code)
     return int(match.group()) if match else float('inf')
 
-records.sort(key=lambda r: (extract_risk_number(r["risk_type"]), r["prompt_type"]))
+records.sort(key=lambda r: (r["risk_code"], r["prompt_type"]))
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
