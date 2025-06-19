@@ -22,14 +22,13 @@ final_stat_dict = {}
 def dic_return():
     # 각 row의 prompt_code 기준으로 순회
     for _, row in excel_data.iterrows():
-        prompt_code = row['prompt_code']
+        prompt_code = row['prompt_code'].strip()  # 앞뒤 공백 제거
         print("prompt_code 변경 중...", prompt_code)
-        # RP 파생형을 'RP'로 통합 처리
-        
-        print(prompt_code in {"pRPfun", "pRPemo", "pRPedu"})
-        if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
-            print("change: ", prompt_code)
-            prompt_code = " pRP"
+
+        # RP 파생형을 'RP'로 통합 처리        
+        if prompt_code.startswith("pRP"):
+            print("✅ 파생 RP 코드 발견 → 변경 전:", prompt_code)
+            prompt_code = "pRP"
 
         # r01 ~ r35 반복
         for i in range(1, 36):
