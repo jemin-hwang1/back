@@ -162,7 +162,7 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
 df = pd.DataFrame(records)
 
 # 정렬된 상태로 pivot을 만들기 위해 먼저 정렬
-df_sorted = df.sort_values(by=["risk_code", "prompt_code"]) 
+df_sorted = df.sort_values(by=["risk_type", "prompt_type"]) 
 
 heatmap_df_weight = df.pivot(index="prompt_type", columns="risk_type", values="weighted_mean_score")
 
