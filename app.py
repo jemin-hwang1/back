@@ -256,10 +256,10 @@ with main_tabs[1]:
     # 📊 Bar Chart 그리기
     fig, ax = plt.subplots(figsize=(14, 6))
     ax.bar(x_labels, y_scores, color='skyblue')
-    ax.set_title("💥 Risk Category 별 Weighted Mean Score", fontsize=16)
-    ax.set_xlabel("위험 카테고리", fontsize=12)
-    ax.set_ylabel("가중 평균 점수", fontsize=12)
-    plt.xticks(rotation=90)
+    ax.set_xlabel("risk category", fontsize=12)
+    ax.set_ylabel("weight_score", fontsize=12)
+ax.set_ylim(0, 5)  # ✅ y축 범위 고정 (0~5)
+    plt.xticks(rotation=45)
 
     st.pyplot(fig)
     # ⛳ df.columns[:8]를 명시적으로 리스트로 변환
