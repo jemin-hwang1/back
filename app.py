@@ -159,15 +159,12 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
-
-def extract_risk_number(risk_code) -> int:
-    """
-    r01 → 1, r10 → 10 등 정수형 추출
-    """
+def extract_risk_number(risk_code: str) -> int:
+    """문자열에서 숫자만 추출하여 정수로 반환 ('r02' → 2, 'r10' → 10 등)"""
     match = re.search(r"\d+", risk_code)
     return int(match.group()) if match else float('inf')
-
-records.sort(key=lambda r: (r["risk_code"], r["prompt_type"]))
+# ✅ 숫자 기반 정렬 적용
+records.sort(key=lambda r: (extract_risk_number(r["risk_code"]), r["prompt_type"]))
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
