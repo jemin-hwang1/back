@@ -144,12 +144,6 @@ prompt_types =  OrderedDict({
 
 dic_return()
 
-print("📦 최종 통계 요약 (final_stat_dict):")
-for (risk_code, prompt_code), stats in sorted(final_stat_dict.items()):
-    print(f"📂 Risk: {risk_code} | Prompt: {prompt_code}")
-    print(f"   ├─ Count: {stats.get('count', 0)}")
-    print(f"   ├─ Mean Score: {stats.get('mean_score', 0.0):.2f}")
-    print(f"   └─ Weighted Mean Score: {stats.get('weighted_mean_score', 0.0):.2f}")
 
 # 딕셔너리를 리스트로 변환
 records = []
@@ -166,12 +160,6 @@ for (risk_code, prompt_code), stats in final_stat_dict.items():
         "sum_base_score": stats["sum_base_score"],
         "weighted_mean_score": stats["weighted_mean_score"]
     })
-
-print("📝 records 내용 확인:")
-for idx, record in enumerate(records):
-    print(f"🔹 [{idx+1}] Risk: {record['risk_type']} | Prompt: {record['prompt_type']}")
-    print(f"    ├─ Sum Base Score: {record['sum_base_score']}")
-    print(f"    └─ Weighted Mean Score: {record['weighted_mean_score']:.2f}")
 
 # DataFrame → Pivot (행: prompt_code, 열: risk_code)
 df = pd.DataFrame(records)
