@@ -25,7 +25,8 @@ def dic_return():
         prompt_code = row['prompt_code']
         print("prompt_code 변경 중...", prompt_code)
         # RP 파생형을 'RP'로 통합 처리
-        if prompt_code.startswith(" pRP"):
+        
+        if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
             print("change: ", prompt_code)
             prompt_code = " pRP"
 
@@ -148,9 +149,6 @@ dic_return()
 # 딕셔너리를 리스트로 변환
 records = []
 for (risk_code, prompt_code), stats in final_stat_dict.items():
-    # pRP 계열은 "pRP"로 치환
-    if prompt_code in {"pRPfun", "pRPemo", "pRPedu"}:
-        prompt_code = "pRP"
     readable_risk_type = prompt_types.get(risk_code, risk_code)  # fallback 처리 포함
     readable_prompt_type = prompt_types.get(prompt_code, prompt_code)  # fallback 처리 포함
 
